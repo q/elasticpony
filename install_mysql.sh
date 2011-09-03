@@ -3,10 +3,11 @@
 VOLUME=$1
 
 if [ -z $VOLUME ]; then
-    echo "You must specify the volume, like /dev/sdf"
+    echo "You must specify the volume, like /dev/xvdf"
     exit 1;
 fi
 
+# stops mysql from asking for a root pw
 echo "*** Installing MySQL (with no root password) ***"
 sudo DEBIAN_FRONTEND=noninteractive aptitude install -y mysql-server
 
