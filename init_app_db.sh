@@ -6,14 +6,10 @@ usage() {
     cat <<EOF
 Usage: $SCRIPT_NAME OPTIONS
 
-
 Required:
  -D DATABASE_NAME        the database name
 
-
 Optional:
- -l URL                  url for a tgz-ed sql dump to load into db
-
  -U DATABASE_USER        the database user. Defaults to DATABASE_NAME
  -P DATABASE_PASSWORD    the database password. Defaults to autogenerate
 EOF
@@ -28,7 +24,7 @@ die() {
     exit $error_code
 }
 
-while getopts "hD:U:P:l:" opt; do
+while getopts "hD:U:P:" opt; do
     case "$opt" in
         h)
             usage
@@ -42,9 +38,6 @@ while getopts "hD:U:P:l:" opt; do
             ;;
         P)
             export DATABASE_PASSWORD="$OPTARG"
-            ;;
-        l)
-            export URL="$OPTARG"
             ;;
         [?])
             die "unknown option $opt" 10
@@ -81,28 +74,18 @@ EOF
     sudo /etc/init.d/mysql restart
 }
 
-load_sql() {
-    if [ -n "$URL" ]; then
-        wget $URL -O dump.sql.tgz && tar zxvf dump.sql.tgz && mysql --user=$DATABASE_USER --password=$DATABASE_PASSWORD $DATABASE_NAME < dump.sql
-    else
-        echo "No url specified. Creating an empty database, up to you to create the schema."
-    fi
-}
-
 print_mysql_config() {
 
     PUBLIC_DNS=`curl http://169.254.169.254/latest/meta-data/public-hostname 2>/dev/null`
 
     cat <<EOF
-Database: $DATABASE_NAME
-Username: $DATABASE_USER
+Use the following in your settings.py to use this database:
+Host: $PUBLIC_DNS
+Name: $DATABASE_NAME
+User: $DATABASE_USER
 Password: $DATABASE_PASSWORD
-
-Add the following to your install_django.sh invocation to use this database:
-
--H $PUBLIC_DNS -D $DATABASE_NAME -U $DATABASE_USER -P $DATABASE_PASSWORD
 
 EOF
 }
 
-create_mysql_database && load_sql && open_external_port && print_mysql_config
+create_mysql_database && open_external_port && print_mysql_config
