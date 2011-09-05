@@ -71,7 +71,7 @@ open_external_port() {
 [mysqld]
     bind-address = 0.0.0.0
 EOF
-    sudo /etc/init.d/mysql restart
+    sudo service mysql restart
 }
 
 print_mysql_config() {
@@ -79,7 +79,9 @@ print_mysql_config() {
     PUBLIC_DNS=`curl http://169.254.169.254/latest/meta-data/public-hostname 2>/dev/null`
 
     cat <<EOF
+
 Use the following in your settings.py to use this database:
+
 Host: $PUBLIC_DNS
 Name: $DATABASE_NAME
 User: $DATABASE_USER
