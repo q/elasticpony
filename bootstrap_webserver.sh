@@ -139,7 +139,7 @@ update_system() {
 
 install_baseline() {
     apt-get install -y build-essential git curl
-    apt-get install -y libjpeg8-dev libpng-dev zlib2g-dev liblcms1-dev
+    apt-get install -y libjpeg-dev libjpeg62 libjpeg62-dev zlib1g-dev libfreetype6 libfreetype6-dev libpng-dev zlib1g-dev liblcms1-dev
 }
 
 install_python() {
